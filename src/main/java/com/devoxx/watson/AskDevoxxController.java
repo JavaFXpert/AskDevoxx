@@ -16,6 +16,9 @@
 
 package com.devoxx.watson;
 
+import com.ibm.watson.developer_cloud.conversation.v1.model.MessageRequest;
+import com.ibm.watson.developer_cloud.conversation.v1.ConversationService;
+import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +54,7 @@ public class AskDevoxxController {
    * Example endpoint usage is inquiry?text=Java modularity&context=abc123
    *
    * @param inquiryText
-   * @param lang
+   * @param context
    * @return Response to the client
    */
   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -76,10 +79,34 @@ public class AskDevoxxController {
    */
   private InquiryResponseNear callDevoxxWatsonServices(String inquiryText) {
 
+    //TODO: Move these
+    final String WORKSPACE_ID = "";
+    final String USERNAME = "";
+    final String PASSWORD = "";
+
+    final String URL = "https://gateway.watsonplatform.net/conversation/api";
+
     InquiryResponseNear inquiryResponseNear = new InquiryResponseNear();
 
+    MessageRequest request = new MessageRequest.Builder().inputText(inquiryText).build();
+    // Configure the Watson Developer Cloud SDK to make a call to the appropriate conversation
+    // service. Specific information is obtained from the VCAP_SERVICES environment variable
+    ConversationService service =
+        new ConversationService(ConversationService.VERSION_DATE_2016_07_11);
+    if (USERNAME != null || PASSWORD != null) {
+      service.setUsernameAndPassword(USERNAME, PASSWORD);
+    }
+    if (URL != null) {
+      service.setEndPoint(URL);
+    }
+
+    // Use the previously configured service object to make a call to the conversational service
+    MessageResponse response = service.message(WORKSPACE_ID, request).execute();
+
+
     inquiryResponseNear.setInquiryText(inquiryText);
-    inquiryResponseNear.setResponseText("Here is a example response");
+    //inquiryResponseNear.setResponseText("Here is a example response");
+    inquiryResponseNear.setResponseText(response.getOutput().toString());
     inquiryResponseNear.setContext("example-context");
 
     return inquiryResponseNear;
