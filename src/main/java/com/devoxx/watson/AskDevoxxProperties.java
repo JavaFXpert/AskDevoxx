@@ -16,18 +16,13 @@
 
 package com.devoxx.watson;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
- * Starter class for the AskDevoxx
- *
  * @author James Weaver
  */
-@SpringBootApplication
-public class AskDevoxxApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(AskDevoxxApplication.class, args);
-	}
+@ConfigurationProperties(prefix = "askdevoxx")
+@Component
+public class AskDevoxxProperties {
 }

@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="GradleLocalSettings">
-    <option name="modificationStamps">
-      <map>
-        <entry key="$USER_HOME$/TRIP/TRIPfx" value="1455816495000" />
-        <entry key="$USER_HOME$/Zong" value="2887063530000" />
-        <entry key="$USER_HOME$/johanvos-wikibrowser-89f8d674ac43" value="1422569724000" />
-      </map>
-    </option>
-    <option name="externalProjectsViewState">
-      <projects_view />
-    </option>
+  <component name="EntryPointsManager">
+    <entry_points version="2.0" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
