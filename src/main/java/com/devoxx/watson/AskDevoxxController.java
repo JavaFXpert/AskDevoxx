@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -63,7 +65,7 @@ public class AskDevoxxController {
 
     log.info("Receive request, inquiryText: " + inquiryText + ", context: " + context);
 
-    InquiryResponseNear inquiryResponseNear = callDevoxxWatsonServices(inquiryText);
+    InquiryResponseNear inquiryResponseNear = callDevoxxWatsonServices(inquiryText, context);
 
 
 
@@ -77,20 +79,25 @@ public class AskDevoxxController {
    * @param inquiryText
    * @return An answer to the client's inquiry
    */
-  private InquiryResponseNear callDevoxxWatsonServices(String inquiryText) {
+  private InquiryResponseNear callDevoxxWatsonServices(String inquiryText, String context) {
 
     //TODO: Move these
-    final String WORKSPACE_ID = "";
-    final String USERNAME = "";
-    final String PASSWORD = "";
+    final String WORKSPACE_ID = "e1faa444-789c-40f6-bc6a-34fd765450a9";
+    final String USERNAME = "76df0216-0b65-4b2a-a16a-f5ee57f455be";
+    final String PASSWORD = "3EcINlm1GczO";
 
     final String URL = "https://gateway.watsonplatform.net/conversation/api";
 
     InquiryResponseNear inquiryResponseNear = new InquiryResponseNear();
 
-    MessageRequest request = new MessageRequest.Builder().inputText(inquiryText).build();
-    // Configure the Watson Developer Cloud SDK to make a call to the appropriate conversation
-    // service. Specific information is obtained from the VCAP_SERVICES environment variable
+    Map<String, Object> contextMap = new HashMap<>();
+    contextMap.put("conversation_id", context);
+
+    MessageRequest request = new MessageRequest.Builder()
+        .inputText(inquiryText)
+        .context(context.length() > 1 ? contextMap : null)
+        .build();
+
     ConversationService service =
         new ConversationService(ConversationService.VERSION_DATE_2016_07_11);
     if (USERNAME != null || PASSWORD != null) {
@@ -105,9 +112,10 @@ public class AskDevoxxController {
 
 
     inquiryResponseNear.setInquiryText(inquiryText);
-    //inquiryResponseNear.setResponseText("Here is a example response");
-    inquiryResponseNear.setResponseText(response.getOutput().toString());
-    inquiryResponseNear.setContext("example-context");
+
+    inquiryResponseNear.setResponseText(response.getText().toString());
+
+    inquiryResponseNear.setContext(response.getContext().get("conversation_id").toString());
 
     return inquiryResponseNear;
   }
